@@ -1,6 +1,4 @@
 % Example usage of the HHO diffusion equation solver
-% global testcase
-% testcase=7;
 % Change this to the directory containing the meshes
 mesh_directory = '\\ad.monash.edu\home\User027\hanzmarc\Documents\MATLAB\matlab_meshes\';
 
@@ -31,8 +29,10 @@ end
 % -------------------------------------------------------------------
 % Construct the HHO data structure
 
-mesh = 'hexa1_2.mat';       % The mesh file in MATLAB data format
-mesh = 'mesh2_3.mat';       % The mesh file in MATLAB data format
+% mesh = 'mesh1_3';     % triangular mesh
+% mesh = 'hexa1_2';     % hexa mesh
+mesh = 'mesh2_3';       % Cartesian mesh
+% mesh = 'mesh4_1';     % Kershaw mesh
 K = 2;                      % The polynomial degree on the cells and edges
 
 hho = HHO(strcat(mesh_directory, mesh), K);
@@ -48,6 +48,7 @@ error = HHORelError(hho, u, u_exact);
 
 [ucell,uedge] = HHO_Cell_Edge_Ave(hho,u); %compute the average value of u on the cell and on the edges(for plotting)
 uVal = [ucell;uedge];
+h_size = max(hho.mesh.h_size);
 ncell = hho.mesh.ncells;
 nedge = hho.mesh.nedges;
 nvert = hho.mesh.nverts;
@@ -58,7 +59,7 @@ vertex = hho.mesh.vertices;
 write_solution_vtk(uVal,'solution_HHO',ncell,nedge,nvert,cell_v,cell_n,cell_e,vertex);
 
 % -------------------------------------------------------------------
-% Construct the gradient
+% Construct the gradient and evaluate at cell centers
 grad_p = zeros(hho.mesh.ncells,2);
 [grad_pT]  = coeffGradP( hho, u);
 for cell_i=1:hho.mesh.ncells
@@ -67,4 +68,8 @@ for cell_i=1:hho.mesh.ncells
     [grad_p(cell_i,:)]  = GradP( hho, grad_pT, cell_i, x, y); %compute the gradient at the cell centers
 end
 
-
+% Measure the rel. error in the reconstructed gradient
+diff = @(T,x,y) norm(GradP(hho,grad_pT,T,x,y)-gradu_exact(x,y))^2;
+error_grad = sqrt(HHOIntegrateGeneral(hho, diff))/sqrt(HHOIntegrateGeneral(hho,norm_gradu));
+            
+fprintf('\t%s, h = %f, error_u = %f, error_gradu = %f \n', mesh, h_size , error, error_grad);
