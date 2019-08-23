@@ -31,7 +31,6 @@ u = DiffusionEquation(hho, source);
 % -------------------------------------------------------------------
 % Plot the solution
 error = HHORelError(hho, u, u_exact);
-fprintf('\nError in L2 norm: %d\n',error)
 
 [ucell,uedge] = HHO_Cell_Edge_Ave(hho,u); %compute the average value of u on the cell and on the edges(for plotting)
 uVal = [ucell;uedge];
@@ -55,3 +54,7 @@ for cell_i=1:hho.mesh.ncells
     y = hho.mesh.cell_center(cell_i,2);
     [grad_p(cell_i,:)]  = GradP( hho, grad_pT, cell_i, x, y); %compute the gradient at the cell centers
 end
+diff = @(T,x,y) norm(GradP(hho,grad_pT,T,x,y)-gradu_exact(x,y))^2;
+error_grad = sqrt(HHOIntegrateGeneral(hho, diff))/sqrt(HHOIntegrateGeneral(hho,norm_gradu));
+            
+fprintf('\t%s, h = %f, error_u = %f, error_gradu = %f \n', mesh, h_size , error, error_grad);

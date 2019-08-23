@@ -15,7 +15,7 @@ meshes = {
 mesh_names = {'Triangular'};
 elseif mesh_choice == 2 % Cartesian
 meshes = {
-    {'mesh2_1', 'mesh2_2', 'mesh2_3', 'mesh2_4', 'mesh2_5'}
+    {'mesh2_1', 'mesh2_2', 'mesh2_3'}%, 'mesh2_4', 'mesh2_5'}
 };
 mesh_names = {'Cartesian'};
 elseif mesh_choice == 3 % Kershaw
