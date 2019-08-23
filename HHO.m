@@ -1,3 +1,12 @@
+% If you use this code or part of it in a scientific publication, 
+% please mention the following book as a reference for the underlying principles
+% of HHO schemes:
+%
+% The Hybrid High-Order Method for Polytopal Meshes: Design, Analysis, and Applications.
+% D. A. Di Pietro and J. Droniou. 2019, 516p. 
+% url: https://hal.archives-ouvertes.fr/hal-02151813.
+
+
 % ----------------------------------------------------------------------
 %                 Core data structure for HHO schemes in 2D
 % ----------------------------------------------------------------------
